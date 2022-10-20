@@ -16,4 +16,8 @@ public class MovieDTO {
         this.oscarCount = oscarCount;
         this.reviewCount = reviewCount;
     }
+
+    public String toCSV() {
+        return String.format("%s,%.2f,%.2f", title, rating, adjustedRating);
+    }
 }
