@@ -1,13 +1,19 @@
 package com.datapao;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 public class MovieDTO {
     private String title;
     private double rating;
     private int oscarCount;
-    private int ratingCount;
+    private int reviewCount;
+    private Double adjustedRating;
+
+    public MovieDTO(String title, double rating, int oscarCount, int reviewCount) {
+        this.title = title;
+        this.rating = rating;
+        this.oscarCount = oscarCount;
+        this.reviewCount = reviewCount;
+    }
 }
