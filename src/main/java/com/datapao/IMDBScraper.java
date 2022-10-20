@@ -8,12 +8,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.System.exit;
+
 public class IMDBScraper {
 
     private static final String IMDB_URL = "http://www.imdb.com";
     private static final String IMDB_TOP_URL = "/chart/top";
 
-    // Gets the title, rating, rating count, oscar count for the top {limit} movies
+    // Gets the title, rating, review count, oscar count for the top {limit} movies
     public List<MovieDTO> scrapeTopMovies(int limit) throws IOException {
         if (limit < 1 || limit > 250) {
             throw new RuntimeException("Limit must be between 1 and 250");
@@ -24,18 +26,32 @@ public class IMDBScraper {
 
         Element row;
         for (int i = 1; i <= limit; i++) {
-            row = document.select("table.chart.full-width tr").get(i);
+            try {
+                row = document.select("table.chart.full-width tr").get(i);
 
-            String title = row.select(".titleColumn a").text();
-            double rating = Double.parseDouble(row.select(".imdbRating").text());
+                // gets the title of the movie
+                String title = row.select(".titleColumn a").text();
+                if (title.length() == 0) {
+                    throw new RuntimeException();
+                }
 
-            String ratingString = row.select(".ratingColumn strong").attr("title");
-            int ratingCount = Integer.parseInt(ratingString.split(" ")[3].replaceAll(",", ""));
+                // gets the rating of the movie
+                double rating = Double.parseDouble(row.select(".imdbRating").text());
 
-            String link = row.select(".titleColumn a").attr("href");
-            int oscarCount = getOscarCount(link);
+                // gets the number of reviews for the movie
+                String reviewString = row.select(".ratingColumn strong").attr("title");
+                int reviewCount = Integer.parseInt(reviewString.split(" ")[3].replaceAll(",", ""));
 
-            movies.add(new MovieDTO(title, rating, oscarCount, ratingCount ));
+                // gets the link for the page of the movie
+                String link = row.select(".titleColumn a").attr("href");
+
+                int oscarCount = getOscarCount(link);
+
+                movies.add(new MovieDTO(title, rating, oscarCount, reviewCount));
+            } catch (Exception e) {
+                System.err.println("The structure of the website changed, cannot get some elements!");
+                exit(1);
+            }
         }
 
         return movies;
