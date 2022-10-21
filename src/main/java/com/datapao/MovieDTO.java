@@ -17,7 +17,7 @@ public class MovieDTO {
         this.reviewCount = reviewCount;
     }
 
-    // creates a copy of movie, used for testing purpose
+    // Creates a copy of movie, used for testing purposes.
     public MovieDTO(MovieDTO movieDTO) {
         this.title = movieDTO.getTitle();
         this.rating = movieDTO.getRating();

@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 
-// These tests require network connection, dependencies are not correctly mocked
+// These tests require network connection, dependencies are not correctly mocked.
 class IMDBScraperTest {
 
     IMDBScraper imdbScraper = new IMDBScraper();
