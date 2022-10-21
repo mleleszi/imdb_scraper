@@ -14,10 +14,10 @@ public class CommandLineRunner {
         List<MovieDTO> movies = imdbScraper.scrapeTopMovies(20);
         ratingAdjustor.calculateAdjustedRating(movies);
 
-        List<String> lines = movies
+        List<String[]> lines = movies
                 .stream()
                 .sorted(Comparator.comparing(MovieDTO::getAdjustedRating).reversed())
-                .map(MovieDTO::toCSV)
+                .map(MovieDTO::toStringArray)
                 .collect(Collectors.toList());
 
         csvWriter.write(lines, "Title,Rating,Adjusted Rating");

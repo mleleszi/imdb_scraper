@@ -26,7 +26,7 @@ public class MovieDTO {
         this.adjustedRating = movieDTO.getAdjustedRating();
     }
 
-    public String toCSV() {
-        return String.format("%s,%.2f,%.2f", title, rating, adjustedRating);
+    public String[] toStringArray() {
+        return new String[]{title, String.valueOf(rating), String.valueOf(adjustedRating)};
     }
 }
