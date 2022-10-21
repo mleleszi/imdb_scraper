@@ -12,8 +12,9 @@ import static java.lang.System.exit;
 
 public class IMDBScraper {
 
-    private static final String IMDB_URL = "http://www.imdb.com";
-    private static final String IMDB_TOP_URL = "/chart/top";
+    // made accessible for tests
+    protected String IMDB_URL = "http://www.imdb.com";
+    protected String IMDB_TOP_URL = "/chart/top";
 
     // Gets the title, rating, review count, oscar count for the top {limit} movies
     public List<MovieDTO> scrapeTopMovies(int limit) throws IOException {
