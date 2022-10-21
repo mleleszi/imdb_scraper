@@ -17,6 +17,15 @@ public class MovieDTO {
         this.reviewCount = reviewCount;
     }
 
+    // creates a copy of movie, used for testing purpose
+    public MovieDTO(MovieDTO movieDTO) {
+        this.title = movieDTO.getTitle();
+        this.rating = movieDTO.getRating();
+        this.oscarCount = movieDTO.getOscarCount();
+        this.reviewCount = movieDTO.getReviewCount();
+        this.adjustedRating = movieDTO.getAdjustedRating();
+    }
+
     public String toCSV() {
         return String.format("%s,%.2f,%.2f", title, rating, adjustedRating);
     }
