@@ -16,14 +16,25 @@ public class IMDBScraper {
     protected String IMDB_URL = "http://www.imdb.com";
     protected String IMDB_TOP_URL = "/chart/top";
 
+
+    // Fetches an HTML from a given URL.
+    public Document getHTMLForURL(String url) {
+        try {
+            return Jsoup.connect(url).get();
+        } catch (IOException e) {
+            System.err.println("Unable to fetch HTML for the given URL!");
+            exit(1);
+        }
+        return null;
+    }
+
     // Gets the title, rating, review count, oscar count for the top {limit} movies
-    public List<MovieDTO> scrapeTopMovies(int limit) throws IOException {
+    public List<MovieDTO> getTopMovies(Document document, int limit) throws IOException {
         if (limit < 1 || limit > 250) {
             throw new RuntimeException("Limit must be between 1 and 250");
         }
 
         List<MovieDTO> movies = new ArrayList<>();
-        Document document = Jsoup.connect(IMDB_URL + IMDB_TOP_URL).get();
 
         Element row;
         for (int i = 1; i <= limit; i++) {
@@ -46,7 +57,8 @@ public class IMDBScraper {
                 // gets the link for the page of the movie
                 String link = row.select(".titleColumn a").attr("href");
 
-                int oscarCount = getOscarCount(link);
+                Document movieDocument = getHTMLForURL(IMDB_URL + link);
+                int oscarCount = getOscarCount(movieDocument);
 
                 movies.add(new MovieDTO(title, rating, oscarCount, reviewCount));
             } catch (Exception e) {
@@ -58,13 +70,13 @@ public class IMDBScraper {
         return movies;
     }
 
-    // Gets the number of Oscars won for a given movie link
-    public int getOscarCount(String link) throws IOException {
-        String awardString = Jsoup.connect(IMDB_URL + link)
-                .get()
+    // Gets the number of Oscars won for a given movie document.
+    public int getOscarCount(Document document) {
+        String awardString = document
                 .select("#__next > main > div > section.ipc-page-background.ipc-page-background--base.sc-9b716f3b-0.hWwhTB > div > section > div > div.sc-b1d8602f-1.fuYOtZ.ipc-page-grid__item.ipc-page-grid__item--span-2 > section:nth-child(3) > div > ul > li > a.ipc-metadata-list-item__label.ipc-metadata-list-item__label--link")
                 .text();
 
+        System.out.printf(awardString);
         if (!(awardString.contains("Oscar") && awardString.contains("Won")))
             return 0;
 
